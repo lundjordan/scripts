@@ -1,4 +1,4 @@
-import socket, urllib
+import socket, urllib, optparse
 from random import randint
 from datetime import datetime
 import botdata
@@ -28,13 +28,16 @@ def get_date_info():
 
     return {
             'weekday' : weekdays[today.isoweekday()], 'month_day' : today.day,
-            'month' : today.month, 'hour' : today.hour, 'min' : today.minute
+            'month' : today.month, 'hour' : today.hour, 'minute' : today.minute
             }
 
 def _parse_weather_info(data, index):
     start_index = data.index(index) + len(index)
-    stop_index = data.find(' ', start_index)
-    return data[start_index:stop_index]
+    stop_index = data.find('<', start_index)
+    dat = data[start_index:stop_index]
+    if dat.endswith('&deg;c'):
+        dat = dat.replace('&deg;c', 'degrees')
+    return dat
 
 def get_weather():
 
@@ -55,15 +58,14 @@ def get_weather():
     dub_desc = _parse_weather_info(data_dub, weather_desc_index)
 
     today_info = get_date_info()
-    weather_style = "For {weekday}, {month}/{day}, Toronto currently has a temp of {temp} \
-            and is describes as {desc}"
+    weather_style = "Currently on {weekday}, {month}/{day}, {place} has a temp of {temp} and is described as {desc}"
 
     tor_final = weather_style.format(weekday=today_info['weekday'],
-                        month=today_info['day'], day=today_info['month_day'],
-                        temp=tor_temp, desc=tor_desc)
+                        month=today_info['month'], day=today_info['month_day'],
+                        place='Toronto', temp=tor_temp, desc=tor_desc)
     dub_final = weather_style.format(weekday=today_info['weekday'],
-                        month=today_info['day'], day=today_info['month_day'],
-                        temp=dub_temp, desc=dub_desc)
+                        month=today_info['month'], day=today_info['month_day'],
+                        place='Dublin', temp=dub_temp, desc=dub_desc)
     return (tor_final, dub_final)
 
 class Bot:
@@ -120,11 +122,13 @@ class Bot:
         else:
             dub_hour = tor_hour + 5
 
-        date_style = "It is currently {hour}:{minute} on {weekday}, {month}/{day} in Toronto. \
-                In Dublin it is {dub_hour}:{minute} or 5 hours ahead."
+        if len(str(today_info['minute'])) == 1:
+            minute = '0' + str(today_info['minute'])
+
+        date_style = "It is currently {hour}:{minute} on {weekday}, {month}/{day} in Toronto. In Dublin it is {dub_hour}:{minute} or 5 hours ahead."
         response = date_style.format(weekday=today_info['weekday'],
-                        month=today_info['day'], day=today_info['month_day'],
-                        hour=tor_hour, minute=today_info['minute'],
+                        month=today_info['month'], day=today_info['month_day'],
+                        hour=tor_hour, minute=minute,
                         dub_hour=dub_hour)
         self.send_msg(MSG, channel=self.channel, msg=response)
 
@@ -139,9 +143,7 @@ class Bot:
         self.send_msg(MSG, channel=self.channel, msg=response)
 
     def tell_best_language(self):
-        response = "The best language all around (sys admin, network manager, web developer, \
-                scripting, math, string manipulation, reg expressions, or anyone who is learning) \
-                is easily python. Obviously..."
+        response = "The best language for all around stuff like sys adminin, network manager, web dev, scripting, string manipulation, reg expression generating, or anyone who is learning how to program is easily Python. Obviously..."
         self.send_msg(MSG, channel=self.channel, msg=response)
 
     def is_it_beer_time(self):
@@ -223,7 +225,7 @@ class Bot:
         elif 'beer' in text:
             self.is_it_beer_time()
         elif 'temperature' in text or 'weather' in text:
-            self.is_it_beer_time()
+            self.tell_weather()
         elif 'hello' in text or 'hi ' in text:
             self.say_hello(sender)
         elif 'who is' in text:
@@ -243,34 +245,27 @@ class Bot:
             self.scan_message(msg)
 
 
-#!/usr/bin/python
-
-import optparse
-
-parser = optparse.OptionParser()
-parser.add_option('-n', '--new', help='creates a new object')
-
-(opts, args) = parser.parse_args()
 if __name__ == '__main__':
 
     parser = optparse.OptionParser()
-    parser.add_option('-s', '--server', action='store', dest='serv',
+    parser.add_option('--server', action='store', dest='serv',
             help='Mandatory. Specify the server eg: irc.quakenet.org')
-    parser.add_option('-n', '--port', action='store', dest='port',
+    parser.add_option('--port', action='store', dest='port', type='int',
             help='Mandatory. Specify the port eg: 6667')
-    parser.add_option('-c', '--channel', action='store', dest='chan',
-        help='Mandatory. Specify the channel eg: #dt354')
-    parser.add_option('-n', '--nick', action='store', dest='ni',
+    parser.add_option('--channel', action='store', dest='chan',
+        help='Mandatory. Specify the channel eg: dt354')
+    parser.add_option('--nick', action='store', dest='ni',
             help='Mandatory. Specify the nickname')
 
     mandatory_list = ['serv', 'port', 'chan', 'ni']
     (opts, args) = parser.parse_args()
 
     for o in mandatory_list:
-        if not opts.__dict__[0]:
+        if not opts.__dict__[o]:
             print "mandatory option is missing\n"
             parser.print_help()
             exit(-1)
 
     # bot = Bot('irc.quakenet.org', 6667, '#dt354', 'jordans_slave')
-    bot = Bot(opts.serv, opts.port, opts.chan, opts.ni)
+    bot = Bot(opts.serv, opts.port, '#' + opts.chan, opts.ni)
+

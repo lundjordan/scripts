@@ -10,16 +10,14 @@ jokes_array  = [
             ["Ever noticed how fast Windows run? Me neither"],
             ["The Ultimate Virus: A self installing copy of 'Windows Vista'"],
             ["There are 10 kinds of people in the world, those who understand binary and those who don't."],
-            ["What do you call a sheep with no legs?", "a cloud"],
-            ["Why was the Energizer Bunny arrested?", "He was charged with battery"],
-            ["What do you call an exploding ape?", "baboom"],
-            ["What do you call bears without ears?", "ears"]
+            ["What do you call a sheep with no legs?", "cloud"],
+            ["Why was the Energizer Bunny arrested?", "charged with battery"],
+            ["What do you call an exploding ape?", "baboo"],
         ]
 
 insults_array  = [
             "so, a thought crossed your mind? Must have been a long and lonely journey.",
             "if you had another brain, it would be lonely.",
-            "a picture is worth a thousand words, but it uses up three thousand times the memory",
             "are your parents siblings?",
             "do you ever wonder what life would be like if you'd had enough oxygen at birth?",
             "here's 20 cents. Call all your friends and bring back some change! ",
@@ -56,7 +54,7 @@ confused_array = [
             "internal error. overload. infinite loop. system out of ram. blue screen of death.... just kidding, I just don't know how to answer you.",
             "I don't know what your saying so how about I take a guess at a response: dogs have 4 legs and rarely stand on ovens. Was that what you wanted to know?",
             "I'm confused, maybe ask Siri? And um, could you tell her I say hi and I think she's hot?",
-            "I don't ****** know. Stop demanding so much out of me!",
+            "I don't ****** know what you're talking about. Stop demanding so much out of me!",
             "say waaaaat?????????"
             ]
 
