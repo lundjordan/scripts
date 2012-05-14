@@ -1,4 +1,5 @@
-import socket, urllib, optparse
+import socket, urllib
+# import optparse
 from random import randint
 from datetime import datetime
 import botdata
@@ -247,25 +248,25 @@ class Bot:
 
 if __name__ == '__main__':
 
-    parser = optparse.OptionParser()
-    parser.add_option('--server', action='store', dest='serv',
-            help='Mandatory. Specify the server eg: irc.quakenet.org')
-    parser.add_option('--port', action='store', dest='port', type='int',
-            help='Mandatory. Specify the port eg: 6667')
-    parser.add_option('--channel', action='store', dest='chan',
-        help='Mandatory. Specify the channel eg: dt354')
-    parser.add_option('--nick', action='store', dest='ni',
-            help='Mandatory. Specify the nickname')
+    # parser = optparse.OptionParser()
+    # parser.add_option('--server', action='store', dest='serv',
+    #         help='Mandatory. Specify the server eg: irc.quakenet.org')
+    # parser.add_option('--port', action='store', dest='port', type='int',
+    #         help='Mandatory. Specify the port eg: 6667')
+    # parser.add_option('--channel', action='store', dest='chan',
+    #     help='Mandatory. Specify the channel eg: dt354')
+    # parser.add_option('--nick', action='store', dest='ni',
+    #         help='Mandatory. Specify the nickname')
 
-    mandatory_list = ['serv', 'port', 'chan', 'ni']
-    (opts, args) = parser.parse_args()
+    # mandatory_list = ['serv', 'port', 'chan', 'ni']
+    # (opts, args) = parser.parse_args()
 
-    for o in mandatory_list:
-        if not opts.__dict__[o]:
-            print "mandatory option is missing\n"
-            parser.print_help()
-            exit(-1)
+    # for o in mandatory_list:
+    #     if not opts.__dict__[o]:
+    #         print "mandatory option is missing\n"
+    #         parser.print_help()
+    #         exit(-1)
 
-    # bot = Bot('irc.quakenet.org', 6667, '#dt354', 'jordans_slave')
-    bot = Bot(opts.serv, opts.port, '#' + opts.chan, opts.ni)
+    bot = Bot('irc.quakenet.org', 6667, '#dt354', 'jordans_slave')
+    # bot = Bot(opts.serv, opts.port, '#' + opts.chan, opts.ni)
 
